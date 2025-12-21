@@ -1,57 +1,57 @@
 package com.todoApp.demo.Services;
 
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import com.todoApp.demo.models.Todo;
 import org.springframework.stereotype.Service;
 import com.todoApp.demo.repository.TodoRepository;
 
 import java.util.List;
-import java.util.ArrayList;
 
 
 @Service
+@AllArgsConstructor
 public class TodoService {
-    private List<Todo>TodoList = new ArrayList<>();
-    private int count=1;
-    private TodoRepository todoRepository;
+    private final TodoRepository todoRepository;
+    // public TodoService(TodoRepository todoRepository){
+    //     this.todoRepository=todoRepository;
+    // }
 
     public Todo addTodo(Todo todo){
-        todo.setId(count++);
-        TodoList.add(todo);
+        if(todo!=null){
+            todoRepository.save(todo);
+            System.out.println("---------------------------------------------");
+            System.out.println("---------------------------------------------");
+            System.out.println(todo.toString());
+
+            System.out.println("---------------------------------------------");
+            System.out.println("---------------------------------------------");
+        }
         return todo;
     }
 
     public List<Todo> getAllTodos(){
-        return TodoList;
+        return todoRepository.findAll();
     }
 
-    public Todo getTodoById(int id){
-        for(int i=0;i<TodoList.size();i++){
-            Todo td = TodoList.get(i);
-            if(td.getId() == id){
-                return td;
-            }
-        }
-        return null;
+    public Todo getTodoById(@NonNull String id){
+        return todoRepository.findById(id).orElse(null);
     }
     
-    public Todo udpdateTodoById(int id,Todo newTodo){
-        Todo curr = getTodoById(id);
-        if(newTodo!=null && curr!=null){
+    public Todo udpdateTodoById(@NonNull String id,Todo newTodo){
+        Todo curr = todoRepository.findById(id).orElse(null);
+        if(curr!=null){
             curr.setDescription(newTodo.getDescription());
             curr.setTitle(newTodo.getTitle());
+            todoRepository.save(curr);
         }
-
-        return null;
+        return curr;
     }
 
-    public boolean deleteTodo(int id){
-
-        for(int i=0;i<TodoList.size();i++){
-            Todo td = TodoList.get(i);
-            if(td.getId() == id){
-                TodoList.remove(i);
-                return true;
-            }
+    public boolean deleteTodo(@NonNull String id){
+        if(todoRepository.existsById(id)){
+            todoRepository.deleteById(id);
+            return true;
         }
         return false;
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.todoApp.demo.Services.TodoService;
 import com.todoApp.demo.models.Todo;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,26 +29,47 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<Todo> getTodos() {
-        return todos.getAllTodos();
+    public ResponseEntity<?> getTodos() {
+        List<Todo>res = todos.getAllTodos();
+        if(res==null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(res);
     }
 
     @GetMapping("/{id}")
-    public Todo getTodo(@PathVariable int id) {
-        return todos.getTodoById(id);
+    public ResponseEntity<?> getTodo(@PathVariable String id) {
+        Todo res = todos.getTodoById(id);
+        if(res==null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(res);
     }
+
     @PostMapping
-    public Todo addTodo(@RequestBody Todo todo) {
-        return todos.addTodo(todo);
+    public ResponseEntity<?> addTodo(@RequestBody Todo todo) {
+        Todo res = todos.addTodo(todo);
+        if(res==null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(res);
     }
     @PutMapping("/{id}")
-    public Todo updateTodo(@PathVariable int id, @RequestBody Todo entity) {
-        return todos.udpdateTodoById(id, entity);
+    public ResponseEntity<?> updateTodo(@PathVariable String id, @RequestBody Todo entity) {
+        Todo res = todos.udpdateTodoById(id, entity);
+        if(res==null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(res);
     }
     
     @DeleteMapping
-    public void deleteTodo(@RequestParam int id) {
-        todos.deleteTodo(id);
+    public ResponseEntity<?> deleteTodo(@RequestParam String id) {
+        boolean val = todos.deleteTodo(id);
+        if(!val){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(201).build();
     }
     
     
