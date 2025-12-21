@@ -2,6 +2,7 @@ package com.todoApp.demo.Services;
 
 import com.todoApp.demo.models.Todo;
 import org.springframework.stereotype.Service;
+import com.todoApp.demo.repository.TodoRepository;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 public class TodoService {
     private List<Todo>TodoList = new ArrayList<>();
     private int count=1;
+    private TodoRepository todoRepository;
 
     public Todo addTodo(Todo todo){
         todo.setId(count++);
